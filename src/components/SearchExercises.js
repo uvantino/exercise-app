@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Stack, TextField, Typography } from '@mui/material';
 
-import { exerciseOptions, fetchData } from '../utils/fetchData';
+import { fetchData, exerciseOptions } from '../utils/fetchData';
 import HorizontalScrollbar from './HorizontalScrollbar';
 import ReusableButton from './ReusableButton';
+import SearchSuggestion from './SearchSuggestion';
 
 const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
   const [search, setSearch] = useState('');
   const [bodyParts, setBodyParts] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   useEffect(() => {
     const fetchExercisesData = async () => {
@@ -30,8 +32,20 @@ const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
       window.scrollTo({ top: 1800, left: 100, behavior: 'smooth' });
 
       setSearch('');
+
       setExercises(searchedExercises);
     }
+  };
+
+  const handleInputChange = (e) => {
+    const input = e.target.value.toLowerCase();
+    setSearch(input);
+    setShowSuggestions(input.trim() !== '');
+  };
+
+  const handleSelectSuggestion = (selectedSuggestion) => {
+    setSearch(selectedSuggestion);
+    setShowSuggestions(false);
   };
 
   return (
@@ -49,26 +63,11 @@ const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
             borderRadius: '40px',
           }}
           value={search}
-          onChange={(e) => setSearch(e.target.value.toLowerCase())}
+          onChange={handleInputChange}
           placeholder="Search Exercises"
           type="text"
         />
-        {/* <Button
-          className="search-btn"
-          sx={{
-            bgcolor: '#FF2625',
-            color: '#fff',
-            textTransform: 'none',
-            width: { lg: '173px', xs: '80px' },
-            height: '56px',
-            position: 'absolute',
-            right: '0px',
-            fontSize: { lg: '20px', xs: '14px' },
-          }}
-          onClick={handleSearch}
-        >
-          Search
-        </Button> */}
+
         <ReusableButton
           onClick={handleSearch}
           additionalStyles={{
@@ -81,9 +80,11 @@ const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
             right: '0px',
             fontSize: { lg: '20px', xs: '14px' },
           }}
+          disabled={!search}
         >
           Search
         </ReusableButton>
+        {showSuggestions && <SearchSuggestion inputValue={search} onSelect={handleSelectSuggestion} />}
       </Box>
       <Box sx={{ position: 'relative', width: '100%', p: '20px' }}>
         <HorizontalScrollbar data={bodyParts} bodyParts setBodyPart={setBodyPart} bodyPart={bodyPart} />
