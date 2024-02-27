@@ -22,7 +22,7 @@ const HeroBanner = () => (
       And Repeat
     </Typography>
     <Typography fontSize="22px" fontFamily="Alegreya" lineHeight="35px">
-      Check out the most effective exercises personalized to you
+      Check out the most effective exercises <br /> personalized to you
     </Typography>
     <Stack>
       <a
